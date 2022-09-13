@@ -1,0 +1,33 @@
+{
+  "name": "unknow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "build": "rimraf dist && tsc -p tsconfig-build.json",
+    "dev": "nodemon src/server.ts",
+    "start-dev": "ts-node-dev -r tsconfig-paths/register --respawn --ignore-watch node_modules src/server.ts",
+    "start-prod": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.7.16",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
+    "eslint": "^8.23.1",
+    "nodemon": "^2.0.19",
+    "prisma": "^4.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.3",
+    "vitest": "^0.23.2"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "kafkajs": "^2.2.0"
+  }
+}
