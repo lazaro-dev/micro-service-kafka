@@ -1,0 +1,43 @@
+version: '3.8'
+
+networks:
+  mynet:
+
+volumes:
+  phpmyadmin_data:
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Sao_Paulo
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - ./mysqldata:/var/lib/mysql
+    networks:
+      - mynet
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      PMA_HOST: db
+    volumes:
+      - phpmyadmin_data:/var/www/html/
+    depends_on:
+      - db
+    networks:
+      - mynet
