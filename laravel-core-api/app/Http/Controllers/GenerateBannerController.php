@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessBanner;
+use App\Models\Banner;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -17,6 +19,16 @@ class GenerateBannerController extends Controller
     {
         $user = User::first();
 
-        return $user;
+        $banner = Banner::create([
+            'title' => "Aposte Agora",
+            'observation' => "Faça sua aposta aqui..."
+        ]);
+
+        ProcessBanner::dispatch([
+            'user' => $user,
+            'banner' => $banner
+        ])->onConnection('rabbitmq');
+
+        return response()->noContent();
     }
 }
