@@ -11,10 +11,8 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=core
-      # - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=core_banner
     volumes:
-      # - '.docker/postgres_data:/data/postgres'
       - '.docker/postgres_data:/var/lib/postgresql/data'
     networks:
       - app-micro-service
@@ -38,40 +36,17 @@ services:
     networks:
       - app-micro-service
 
-  zookeeper:
-    image: 'bitnami/zookeeper:latest'
-    networks:
-      - app-micro-service
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: always
     ports:
-      - '2181:2181'
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      - "5672:5672"
+      - "15672:15672"
     volumes:
-      - .docker/zookeeper_data:/bitnami
-      
-  kafka:
-    image: 'bitnami/kafka:latest'
-    ports:
-      - '9092:9092'
-      - '9093:9093'
+          - .docker/rabbitmq_data:/var/lib/rabbitmq/
     environment:
-      - KAFKA_ADVERTISED_LISTENERS=CLIENT://kafka:9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENERS=CLIENT://:9092
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
-    depends_on:
-      - zookeeper
-    networks:
-      - app-micro-service
-    volumes:
-      - .docker/kafka_data:/bitnami
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=admin
 
 volumes:
   postgres_data:
